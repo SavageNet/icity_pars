@@ -12,6 +12,33 @@ channel_username = CHANNEL_USERNAME
 
 client = TelegramClient('session_1', api_id, api_hash)
 
+async def get_right_messages(channel_username):
+    channel = await client.get_entity(channel_username)
+
+        history = await client(GetHistoryRequest(
+            peer=channel,
+            offset_id=offset_id,
+            offset_date=None,
+            add_offset=0,
+            limit=limit,
+            max_id=0,
+            min_id=0,
+            hash=0
+        ))
+        
+        messages = history.messages
+        product_msg_id = {}
+        for message in messages:
+            if message.pinned:
+                message = message.to_dict()
+                for element in message['reply_markup']['rows']:
+                    for button in element['buttons']:
+                        key = button['text']
+                        value = int(button['url'].split('/')[-1])
+                        if key not in product_msg_id:
+                            product_msg_id[key] = value
+        product_msg_list = await client.get_messages(channel_username, ids=list(product_msg_id.values()))
+
 async def main():
     offset_id = 0
     limit = 100  # Количество сообщений за один запрос
@@ -27,31 +54,7 @@ async def main():
         except SessionPasswordNeededError:
             await client.sign_in(password=input('Password: '))
     
-    channel = await client.get_entity(channel_username)
-
-    history = await client(GetHistoryRequest(
-        peer=channel,
-        offset_id=offset_id,
-        offset_date=None,
-        add_offset=0,
-        limit=limit,
-        max_id=0,
-        min_id=0,
-        hash=0
-    ))
     
-    messages = history.messages
-    product_msg_id = {}
-    for message in messages:
-        if message.pinned:
-            message = message.to_dict()
-            for element in message['reply_markup']['rows']:
-                for button in element['buttons']:
-                    key = button['text']
-                    value = int(button['url'].split('/')[-1])
-                    if key not in product_msg_id:
-                        product_msg_id[key] = value
-    product_msg_list = await client.get_messages(channel_username, ids=list(product_msg_id.values()))
     result = {}
     msg_buffer = []
     for p, product_msg in enumerate(product_msg_list):
