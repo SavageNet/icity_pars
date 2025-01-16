@@ -90,7 +90,9 @@ def get_data(lines: list[str], parser_type: str):
                 if len(result) == 0:
                     result['Apple Pencil'] = {}
                     while i < len(lines) and is_price_line(lines[i]):
-                        words = split_by_dash(lines[i])
+                        words = list(map(
+                            lambda word: word.replace('USB_C', 'USB-C'),
+                            split_by_dash(lines[i].replace('USB-C', 'USB_C'))))
                         product_type = clear(words[0])
                         product_type_price = clear(words[-1])
                         result['Apple Pencil'][product_type] = product_type_price
