@@ -1,6 +1,7 @@
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.messages import GetHistoryRequest
+import json
 from config import *
 from functions import *
 from parser import *
@@ -36,8 +37,7 @@ async def get_right_messages(channel_username: str, product_list: list[str] = No
 async def main():
     product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
     my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)    
-    result = {}
-    msg_buffer = []
+    result = []
     for _, product_msg in enumerate(product_msg_list):
         if not product_msg.message: 
             continue 
@@ -46,7 +46,11 @@ async def main():
         if data:
             print_dict(data)
             print('\n--------------------------------\n')
+            result.append(data)
         else:
+            with open('data.json', 'w') as json_file:
+                json.dump(result, json_file, indent=4)
+                print(f'Сохранил json в {json_file.__dir__()}')
             break
 with client:
     client.loop.run_until_complete(main())
