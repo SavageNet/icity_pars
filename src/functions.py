@@ -2,7 +2,7 @@ import re
 
 def is_price_line(line: str) -> bool:
     line = line.strip()
-    endings = ('ожидаем')
+    endings = ('ожидаем', 'по запросу')
     return ('-' in line or '–' in line) and (line[-2].isdigit() or line.endswith(endings))
 
 

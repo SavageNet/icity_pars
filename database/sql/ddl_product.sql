@@ -4,5 +4,6 @@ CREATE TABLE raw_data_layer.product
 	model_nm VARCHAR(256) NOT NULL,
 	model_feature VARCHAR(256) NOT NULL,
 	price INT,
-	price_unit_nm VARCHAR(64) DEFAULT 'тыс.р'
+	price_unit_nm VARCHAR(64) DEFAULT 'Руб.',
+	time_upadated TIMESTAMP DEFAULT DATE_TRUNC('SECONDS', CURRENT_TIMESTAMP)
 )

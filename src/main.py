@@ -34,23 +34,29 @@ async def get_right_messages(channel_username: str, product_list: list[str] = No
     product_msg_list = await client.get_messages(channel_username, ids=list(product_msg_id.values()))
     return product_msg_list, product_msg_id
 
-async def main():
-    product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
-    my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)    
+def save_json(product_msg_list, json_name):
     result = []
     for _, product_msg in enumerate(product_msg_list):
         if not product_msg.message: 
             continue 
-        lines = product_msg.message.split('\n')
+        msg_text = str(product_msg.message)
+        lines = msg_text.split('\n')
         data = get_data(lines, parser_type = lines[0])
         if data:
-            print_dict(data)
-            print('\n--------------------------------\n')
+            #print_dict(data)
+            #print('\n--------------------------------\n')
             result.append(data)
         else:
-            with open('data.json', 'w') as json_file:
+            with open(f'data/{json_name}.json', 'w') as json_file:
                 json.dump(result, json_file, indent=4)
-                print(f'Сохранил json в {json_file.__dir__()}')
-            break
+                print(f'Сохранил {json_name}.json')
+            break    
+
+async def main():
+    product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
+    my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)    
+    save_json(product_msg_list, 'icity_data')
+    save_json(my_product_msg_list, 'appler_data')
+    
 with client:
     client.loop.run_until_complete(main())
