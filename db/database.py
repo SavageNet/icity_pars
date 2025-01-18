@@ -10,9 +10,11 @@ try:
         host='localhost',
         port='5432'
     )
+    if conn: 
+        print(f'Connected to {db_name}')
     with conn.cursor() as cursor:
         query = """
-            select * from pg_roles
+            select * from test
         """
         cursor.execute(query)
         records = cursor.fetchall()
@@ -22,4 +24,5 @@ try:
 except Exception as e:
     print(f"Ошибка: {e}")
 finally:
-    if conn: conn.close()
+    if conn:
+        conn.close()
