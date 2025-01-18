@@ -39,8 +39,9 @@ def save_json(product_msg_list, json_name):
     for _, product_msg in enumerate(product_msg_list):
         if not product_msg.message: 
             continue 
-        msg_text = str(product_msg.message)
+        msg_text = product_msg.message
         lines = msg_text.split('\n')
+        if 'Гонконг / Китай' in lines[0]: continue
         data = get_data(lines, parser_type = lines[0])
         if data:
             #print_dict(data)
@@ -48,14 +49,14 @@ def save_json(product_msg_list, json_name):
             result.append(data)
         else:
             with open(f'data/{json_name}.json', 'w') as json_file:
-                json.dump(result, json_file, indent=4)
+                json.dump(result, json_file, ensure_ascii=True, indent=4)
                 print(f'Сохранил {json_name}.json')
             break    
 
 async def main():
-    product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
-    my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)    
-    save_json(product_msg_list, 'icity_data')
+    #product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
+    my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)
+    #save_json(product_msg_list, 'icity_data')
     save_json(my_product_msg_list, 'appler_data')
     
 with client:
