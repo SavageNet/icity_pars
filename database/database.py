@@ -1,5 +1,5 @@
 import psycopg2
-from config import *
+from src.config import *
 
 try:
     # Установите соединение с базой данных
