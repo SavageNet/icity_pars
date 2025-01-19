@@ -15,11 +15,11 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0:
                     delta += 1
-                product_name = lines[i - delta]
+                product_name = clear(lines[i - delta])
                 result[product_name.strip()] = {}
                 while i < len(lines) and is_price_line(lines[i]):
                     words = split_by_dash(lines[i])
-                    product_type = words[0]
+                    product_type = clear(words[0])
                     product_type_price = clear(words[-1])
                     result[product_name.strip()][product_type.strip()] = product_type_price
                     i += 1
@@ -36,11 +36,11 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0:
                     delta += 1
-                product_name = lines[i - delta]
+                product_name = clear(lines[i - delta])
                 if len(result) == 0:
                     while i < len(lines) and is_price_line(lines[i]):
                         words = split_by_dash(lines[i])
-                        product_type = words[0]
+                        product_type = clear(words[0])
                         product_type_price = clear(words[-1])
                         result[product_type] = {}
                         result[product_type]['-'] = product_type_price
@@ -49,7 +49,7 @@ def get_data(lines: list[str], parser_type: str):
                     result[product_name.strip()] = {}
                     while i < len(lines) and is_price_line(lines[i]):
                         words = split_by_dash(lines[i])
-                        product_type = words[0]
+                        product_type = clear(words[0])
                         product_type_price = clear(words[-1])
                         result[product_name.strip()][product_type.strip()] = product_type_price
                         i += 1
@@ -66,11 +66,11 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0 or 'watch' not in lines[i - delta].lower():
                     delta += 1             
-                product_name = lines[i - delta]
+                product_name = clear(lines[i - delta])
                 result[product_name.strip()] = {}
                 while i < len(lines) and is_price_line(lines[i]):
                     words = split_by_dash(lines[i])
-                    product_type = words[0]
+                    product_type = clear(words[0])
                     product_type_price = clear(words[-1])
                     result[product_name.strip()][product_type.strip()] = product_type_price
                     i += 1
@@ -87,7 +87,7 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0:
                     delta += 1
-                product_name = lines[i - delta]
+                product_name = clear(lines[i - delta])
                 if len(result) == 0:
                     result['Apple Pencil'] = {}
                     while i < len(lines) and is_price_line(lines[i]):
@@ -95,7 +95,7 @@ def get_data(lines: list[str], parser_type: str):
                             lambda word: word.replace('USB_C', 'USB-C'),
                             split_by_dash(lines[i].replace('USB-C', 'USB_C')))
                         )
-                        product_type = words[0]
+                        product_type = clear(words[0])
                         product_type_price = clear(words[-1])
                         result['Apple Pencil'][product_type.strip()] = product_type_price
                         i += 3
@@ -107,7 +107,7 @@ def get_data(lines: list[str], parser_type: str):
                                 lambda word: word.replace('Wi_Fi', 'Wi-Fi'),
                                 split_by_dash(lines[i].replace('I', 'i').replace('Wi-Fi', 'Wi_Fi')))
                             )
-                            product_type = words[0]
+                            product_type = clear(words[0])
                             product_type_price = clear(words[-1])
                             result[product_name.strip()][product_type.strip()] = product_type_price
                         i += 1
@@ -124,13 +124,13 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0:
                     delta += 1
-                product_name = lines[i - delta]
+                product_name = clear(lines[i - delta])
                 if not '(' in product_name:
                     result[product_name.strip()] = {}
                     while i < len(lines) and (is_price_line(lines[i]) or lines[i].startswith('[')):
                         if not lines[i].startswith('['): 
                             words = split_by_dash(lines[i])
-                            product_type = words[0]
+                            product_type = clear(words[0])
                             product_type_price = clear(words[-1])
                             result[product_name.strip()][product_type.strip()] = product_type_price
                         i += 1
@@ -159,13 +159,13 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0:
                     delta += 1
-                product_name = lines[i - delta].replace('🔌 Аксессуары Apple 🔌', '🥽 Apple Vision Pro').replace(':', '').strip()
+                product_name = clear(lines[i - delta].replace('🔌 Аксессуары Apple 🔌', '🥽 Apple Vision Pro').replace(':', '').strip())
                 if 'Pack' in product_name:
-                    product_name = '🔌 Adapter'
+                    product_name = clear('🔌 Adapter')
                 result[product_name.strip()] = {}
                 while i < len(lines) and is_price_line(lines[i]):
                     words = split_by_dash(lines[i])
-                    product_type = words[0]
+                    product_type = clear(words[0])
                     product_type_price = clear(words[-1])
                     result[product_name.strip()][product_type.strip()] = product_type_price
                     i += 1
@@ -182,12 +182,12 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0:
                     delta += 1
-                product_name = lines[i - delta]
+                product_name = clear(lines[i - delta])
                 result[product_name.strip()] = {}
                 while i < len(lines) and (is_price_line(lines[i]) or len(clear(lines[i])) == 0):
                     if not len(clear(lines[i])) == 0:
                         words = split_by_dash(lines[i])
-                        product_type = words[0]
+                        product_type = clear(words[0])
                         product_type_price = clear(words[-1])
                         result[product_name.strip()][product_type.strip()] = product_type_price
                     i += 1
@@ -211,7 +211,7 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0:
                     delta += 1
-                product_name = lines[i - delta]
+                product_name = clear(lines[i - delta])
                 result[product_name.strip()] = {}
                 while i < len(lines) and \
                     (is_price_line(lines[i]) \
@@ -226,7 +226,7 @@ def get_data(lines: list[str], parser_type: str):
                         if 'deluxe' in lines[i].lower():
                             line = line.replace(' - ', f' {lines[i - 3]} - ')
                         words = split_by_dash(line)
-                        product_type = words[0]
+                        product_type = clear(words[0])
                         product_type_price = clear(words[-1])
                         if not product_type_price[-1].isdigit():
                             product_type_price = product_type_price[:-1]
@@ -245,13 +245,13 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and (len(clear(lines[i - delta])) == 0 or lines[i - delta].startswith('(')):
                     delta += 1
-                product_name = lines[i - delta]
+                product_name = clear(lines[i - delta])
                 result[product_name.strip()] = {}
                 while i < len(lines) and (is_price_line(lines[i]) or len(clear(lines[i])) == 0):
                     if not len(clear(lines[i])) == 0:
                         line = re.sub(r'\s+', ' ', lines[i]).replace(' )', ')')
                         words = split_by_dash(line)
-                        product_type = words[0]
+                        product_type = clear(words[0])
                         product_type_price = clear(words[-1])
                         result[product_name.strip()][product_type.strip()] = product_type_price
                     i += 1
@@ -268,11 +268,11 @@ def get_data(lines: list[str], parser_type: str):
                 delta = 1
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0:
                     delta += 1
-                product_name = lines[i - delta]
+                product_name = clear(lines[i - delta])
                 result[product_name.strip()] = {}
                 while i < len(lines) and is_price_line(lines[i]):
                     words = split_by_dash(lines[i])
-                    product_type = words[0]
+                    product_type = clear(words[0])
                     product_type_price = clear(words[-1])
                     result[product_name.strip()][product_type.strip()] = product_type_price
                     i += 1
