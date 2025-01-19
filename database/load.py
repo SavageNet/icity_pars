@@ -36,7 +36,7 @@ def get_query(json_name, table_schema, table_name):
     query = f"""
         TRUNCATE TABLE {table_schema}.{table_name} RESTART IDENTITY
         ;
-        insert into {table_schema}.{table_name}(model_nm, model_feature, price)
+        insert into {table_schema}.{table_name}(model_name, model_feature, price)
         values
         """
     query = query + values_str        
