@@ -9,7 +9,7 @@ from parser import *
 
 client = TelegramClient('session_1', api_id, api_hash)
 
-async def get_right_messages(channel_username: str, product_list: list[str] = None, offset_id:int = 0, limit:int = 100):
+async def get_right_messages(channel_username: str, product_list: list[str] = None, offset_id:int = 0, limit:int = 100, client=client):
     channel = await client.get_entity(channel_username)
     history = await client(GetHistoryRequest(
         peer=channel,
@@ -37,7 +37,6 @@ async def get_right_messages(channel_username: str, product_list: list[str] = No
 
 def save_json(product_msg_list, json_name):
     result = []
-    print(f'{json_name} lines:\n')
     for _, product_msg in enumerate(product_msg_list):
         if not product_msg.message: 
             continue 
@@ -50,15 +49,23 @@ def save_json(product_msg_list, json_name):
             #print_dict(data)
             #print('\n--------------------------------\n')
             result.append(data)
+        else:
+            raise Exception(f'ParserError at message {lines[0]}')
     with open(f'data/{json_name}.json', 'w') as json_file:
         json.dump(result, json_file, ensure_ascii=True, indent=4)
         print(f'Сохранил {json_name}.json в {os.path.abspath('data/')}')   
+
+async def extract(client=client):
+    product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list, client=client)
+    my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list, client=client)
+    save_json(product_msg_list, 'icity_data')
+    save_json(my_product_msg_list, 'appler_data')
 
 async def main():
     product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
     my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)
     save_json(product_msg_list, 'icity_data')
     save_json(my_product_msg_list, 'appler_data')
-    
+
 with client:
     client.loop.run_until_complete(main())

@@ -243,7 +243,7 @@ def get_data(lines: list[str], parser_type: str):
             flag2 = is_price_line(lines[i - 1])
             if flag1 and not flag2:
                 delta = 1
-                while i - delta >= 0 and (len(clear(lines[i - delta])) or lines[i - delta].startswith('(')) == 0:
+                while i - delta >= 0 and (len(clear(lines[i - delta])) == 0 or lines[i - delta].startswith('(')):
                     delta += 1
                 product_name = lines[i - delta]
                 result[product_name.strip()] = {}

@@ -1,11 +1,6 @@
 import psycopg2
 import json
-import os
-import sys
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-)
-from src.config import *
+from config import *
 
 def get_connect(db_name, db_username, db_password, host, port):
     conn = psycopg2.connect(
@@ -67,4 +62,5 @@ def main():
         
 if __name__ == '__main__':
     main()
+    print('Data is loaded')
     
