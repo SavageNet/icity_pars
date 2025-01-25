@@ -1,6 +1,7 @@
 config.py
 
 session_1.session
+session_1.session-journal
 
 __pycache__/
 venv/
