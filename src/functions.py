@@ -8,13 +8,19 @@ def is_price_line(line: str) -> bool:
 
 def split_by_dash(line: str) -> list[str]:
     if chr(45) in line:
-        return line.split(chr(45))
+        result = line.split(chr(45))
+        if len(result) > 2:
+            raise Exception(f'В строке больше одного тире: {result}')
     else:
-        return line.split(chr(8211))
+        result = line.split(chr(8211))
+        if len(result) > 2:
+            raise Exception(f'В строке больше одного тире: {result}')        
+    return result
 
 def clear(line: str) -> str:
-    result = re.sub(r'[^а-яА-ЯёЁa-zA-Z0-9(){}\[\]\-\–\+". ]', '', line)
+    result = re.sub(r'[^а-яА-ЯёЁa-zA-Z0-9(){}\[\]\-\–\+\”\".;,\/ ]', '', line)
     result = re.sub(r'\s+', ' ', result)
+    result = re.sub(r'\s*;\s*', ';', result)
     return result.strip() 
 
 def is_right_key(key: str, product_list: list[str]) -> bool:
@@ -26,9 +32,3 @@ def is_right_key(key: str, product_list: list[str]) -> bool:
 def print_dict(d: dict):
     for key, value in d.items():
         print(f'{key}: {value}')
-
-if __name__ == '__main__':
-    a = set()
-    for e in '━─━─━─━─━─━─━─━':
-        a.add(ord(e))
-    print(a)

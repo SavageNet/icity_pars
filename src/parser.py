@@ -88,6 +88,7 @@ def get_data(lines: list[str], parser_type: str):
                 while i - delta >= 0 and len(clear(lines[i - delta])) == 0:
                     delta += 1
                 product_name = clear(lines[i - delta])
+                curr_line = lines[i]
                 if len(result) == 0:
                     result['Apple Pencil'] = {}
                     while i < len(lines) and is_price_line(lines[i]):
@@ -103,6 +104,7 @@ def get_data(lines: list[str], parser_type: str):
                     result[product_name.strip()] = {}
                     while i < len(lines) and (is_price_line(lines[i]) or len(clear(lines[i])) == 0):
                         if not len(clear(lines[i])) == 0:
+                            a = 1
                             words = list(map(
                                 lambda word: word.replace('Wi_Fi', 'Wi-Fi'),
                                 split_by_dash(lines[i].replace('I', 'i').replace('Wi-Fi', 'Wi_Fi')))
@@ -162,11 +164,11 @@ def get_data(lines: list[str], parser_type: str):
                 product_name = clear(lines[i - delta].replace('🔌 Аксессуары Apple 🔌', '🥽 Apple Vision Pro').replace(':', '').strip())
                 if 'Pack' in product_name:
                     product_name = clear('🔌 Adapter')
-                result[product_name.strip()] = {}
+                result[product_name.strip()] = {}           
                 while i < len(lines) and is_price_line(lines[i]):
                     words = split_by_dash(lines[i])
-                    product_type = clear(words[0])
-                    product_type_price = clear(words[-1])
+                    product_type = clear(words[0].replace('_', '-'))
+                    product_type_price = clear(words[-1].replace('_', '-'))
                     result[product_name.strip()][product_type.strip()] = product_type_price
                     i += 1
             else: 
@@ -250,9 +252,12 @@ def get_data(lines: list[str], parser_type: str):
                 while i < len(lines) and (is_price_line(lines[i]) or len(clear(lines[i])) == 0):
                     if not len(clear(lines[i])) == 0:
                         line = re.sub(r'\s+', ' ', lines[i]).replace(' )', ')')
+                        if len((substrings := re.findall(r'\S\-\S', line))) > 0:
+                            for substring in substrings:
+                                line = line.replace(substring, substring.replace('-', '_'))
                         words = split_by_dash(line)
-                        product_type = clear(words[0])
-                        product_type_price = clear(words[-1])
+                        product_type = clear(words[0].replace('_', '-'))
+                        product_type_price = clear(words[-1].replace('_', '-'))
                         result[product_name.strip()][product_type.strip()] = product_type_price
                     i += 1
             else: 

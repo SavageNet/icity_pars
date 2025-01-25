@@ -4,6 +4,8 @@ CREATE TABLE source.icity_price
 	model_feature VARCHAR(256) NOT NULL,
 	price INT,
 	unit_nm VARCHAR(64) DEFAULT 'Руб.',
+	processed_dttm TIMESTAMP NOT NULL DEFAULT DATE_TRUNC('second', NOW())::TIMESTAMP,
+	time_updated TIMESTAMP NOT NULL DEFAULT DATE_TRUNC('second', NOW())::TIMESTAMP,
 	PRIMARY KEY (model_nm, model_feature)
 );
 CREATE TABLE source.appler_price 
@@ -12,9 +14,10 @@ CREATE TABLE source.appler_price
 	model_feature VARCHAR(256) NOT NULL,
 	price INT,
 	unit_nm VARCHAR(64) DEFAULT 'Руб.',
+	processed_dttm TIMESTAMP NOT NULL DEFAULT DATE_TRUNC('second', NOW())::TIMESTAMP,
+	time_updated TIMESTAMP NOT NULL DEFAULT DATE_TRUNC('second', NOW())::TIMESTAMP,	
 	PRIMARY KEY (model_nm, model_feature)
 );
-
 CREATE TABLE stg.icity_price 
 (
 	model_nm VARCHAR(256) NOT NULL,
@@ -38,4 +41,9 @@ CREATE TABLE stg.appler_price
 	effective_from_dttm TIMESTAMP NOT NULL DEFAULT DATE_TRUNC('second', NOW())::TIMESTAMP,
 	effective_to_dttm TIMESTAMP NOT NULL DEFAULT '5999-12-31'::TIMESTAMP,
 	PRIMARY KEY (model_nm, model_feature, effective_from_dttm)
+);
+create table dicts.color_to_emoji
+(
+	color_nm varchar(64) not null primary key,
+	emoji varchar(8) not null
 );
