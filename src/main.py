@@ -30,7 +30,7 @@ async def get_right_messages(channel_username: str, product_list: list[str] = No
                 for button in element['buttons']:
                     key = clear(button['text']).lower().replace(' ', '')
                     value = int(button['url'].split('/')[-1])
-                    if product_list == None or is_right_key(key, product_list):
+                    if product_list == None or any([name.lower() in key.lower() for name in product_list]):
                         product_msg_id[key] = value
     product_msg_list = await client.get_messages(channel_username, ids=list(product_msg_id.values()))
     return product_msg_list, product_msg_id
@@ -44,28 +44,40 @@ def save_json(product_msg_list, json_name):
         lines = msg_text.split('\n')
         if 'Гонконг / Китай' in lines[0]: 
                 continue
-        data = get_data(lines, parser_type = lines[0])
+        data = get_data(lines, parser_type=lines[0], need_cleaning=False)
         if data:
-            #print_dict(data)
-            #print('\n--------------------------------\n')
             result.append(data)
+            #print_dict(data)
+            #print('\n-----------------------------\n')
         else:
-            raise Exception(f'ParserError at message {lines[0]}')
+            raise Exception(f'break на {lines[0]}')
     with open(f'data/{json_name}.json', 'w') as json_file:
-        json.dump(result, json_file, ensure_ascii=True, indent=4)
-        print(f'Сохранил {json_name}.json в {os.path.abspath('data/')}')   
-
-async def extract(client=client):
-    product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list, client=client)
-    my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list, client=client)
-    save_json(product_msg_list, 'icity_data')
-    save_json(my_product_msg_list, 'appler_data')
+        json.dump(result, json_file, ensure_ascii=True, indent=4, )
+        print(f'Сохранил {json_name}.json в {os.path.abspath('data/')}')
 
 async def main():
+    product_list = [
+        'Iphone', 
+        'Airpods', 
+        'Watch', 
+        'MacBook', 
+        'IPad', 
+        'IMac', 
+        'Аксессуары', 
+        'Samsung', 
+        'Dyson', 
+        'Play', 
+        'VR',
+        'Garmin',
+        'Камер',
+        'Пылесос',
+        'Квадрокоптер',
+        'Аудио'
+    ]
     product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
-    my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)
+    #my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)
     save_json(product_msg_list, 'icity_data')
-    save_json(my_product_msg_list, 'appler_data')
+    #save_json(my_product_msg_list, 'appler_data')
 
 with client:
     client.loop.run_until_complete(main())

@@ -43,16 +43,16 @@ def main():
         table_schema='source',
         table_name='icity_price'
     )
-    appler_query = get_query(
-        json_name='appler_data',
-        table_schema='source',
-        table_name='appler_price'       
-        )
+    # appler_query = get_query(
+    #     json_name='appler_data',
+    #     table_schema='source',
+    #     table_name='appler_price'       
+    # )
     try:
         conn = get_connect(db_name, db_username, db_password, host, port)   
         with conn.cursor() as cursor:
             cursor.execute(icity_query)
-            cursor.execute(appler_query)
+            #cursor.execute(appler_query)
             conn.commit()
     except Exception as e:
         print(e)
