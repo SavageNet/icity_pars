@@ -21,7 +21,7 @@ def split_by_dash(line: str) -> tuple[str]:
         if line[i] == chr(45) or line[i] == chr(8211):
             dash_index = i
             break
-    if not dash_index:
+    else:
         raise Exception(f'В строке нет дефиса: {line}')
     try:
         return (line[:dash_index], line[dash_index + 1:])

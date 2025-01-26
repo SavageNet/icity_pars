@@ -75,8 +75,6 @@ def get_data(lines: list[str], parser_type: str, need_cleaning=False):
         'dji',
         'аудио'
     )
-    if parser_type == '🤪Робот-Пылесосы Dreame 🤪'.lower(): 
-        pass
     clear_func = clear if need_cleaning else lambda x: x
     is_simple = any([e.lower() in parser_type for e in simple_message_names])
     lines = list(map(lambda line: re.sub(r'\s+', ' ', line).replace(':', ''), lines))
