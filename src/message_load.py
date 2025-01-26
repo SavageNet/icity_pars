@@ -1,11 +1,9 @@
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.messages import GetHistoryRequest
-import json
-import os
+import psycopg2
 from config import *
 from functions import *
-from parser import *
 
 client = TelegramClient('session_1', api_id, api_hash)
 
@@ -35,25 +33,20 @@ async def get_right_messages(channel_username: str, product_list: list[str] = No
     product_msg_list = await client.get_messages(channel_username, ids=list(product_msg_id.values()))
     return product_msg_list, product_msg_id
 
-def save_json(product_msg_list, json_name):
-    result = []
-    for _, product_msg in enumerate(product_msg_list):
-        if not product_msg.message: 
-            continue 
-        msg_text = product_msg.message
-        lines = msg_text.split('\n')
-        if 'Гонконг / Китай' in lines[0]: 
-                continue
-        data = get_data(lines, parser_type=lines[0], need_cleaning=False)
-        if data:
-            result.append(data)
-            #print_dict(data)
-            #print('\n-----------------------------\n')
-        else:
-            raise Exception(f'break на {lines[0]}')
-    with open(f'data/{json_name}.json', 'w') as json_file:
-        json.dump(result, json_file, ensure_ascii=True, indent=4, )
-        print(f'Сохранил {json_name}.json в {os.path.abspath('data/')}')
+def get_connect(db_name, db_username, db_password, host, port):
+    conn = psycopg2.connect(
+        dbname=db_name,
+        user=db_username,
+        password=db_password,
+        host=host,
+        port=port
+    )
+    if not conn: 
+        raise Exception('ConnectionError')
+    return conn
+
+def get_content_from_view():
+    
 
 async def main():
     product_list = [
@@ -67,12 +60,21 @@ async def main():
         'Samsung', 
         'Dyson', 
         'Play', 
-        'Камер',
-    ]
-    #product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
-    my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)
-    #save_json(product_msg_list, 'icity_data')
-    save_json(my_product_msg_list, 'appler_data')
-
-with client:
+        'Камер'
+    ]    
+    product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
+    try:
+        conn = get_connect(db_name, db_username, db_password, host, port)   
+        with conn.cursor() as cursor:
+            cursor.execute(
+                
+            )
+            conn.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
+        
+if __name__ == '__main__':
     client.loop.run_until_complete(main())

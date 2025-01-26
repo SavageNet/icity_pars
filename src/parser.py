@@ -101,8 +101,8 @@ def get_data(lines: list[str], parser_type: str, need_cleaning=False):
         result = playstation_pars(lines, clear_func, result, goal_word='Sony PlayStation') 
     elif 'пылесос' in parser_type:
         for i in range(len(lines)):
-            if lines[i].endswith('0'):
-                lines[i] += '₽'      
+            if len(lines[i].strip()) > 0 and lines[i].strip()[-1].isdigit():
+                lines[i] = lines[i].strip() + '₽'
         result = simple_pars(lines, clear_func, result)
     else:
         return None

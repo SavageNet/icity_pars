@@ -1,6 +1,7 @@
 import psycopg2
 import json
 from config import *
+import re
 
 def get_connect(db_name, db_username, db_password, host, port):
     conn = psycopg2.connect(
@@ -43,17 +44,24 @@ def main():
         table_schema='source',
         table_name='icity_price'
     )
-    # appler_query = get_query(
-    #     json_name='appler_data',
-    #     table_schema='source',
-    #     table_name='appler_price'       
-    # )
+    appler_query = get_query(
+        json_name='appler_data',
+        table_schema='source',
+        table_name='appler_price'       
+    )
+    queries = (
+        #icity_query,
+        appler_query,
+    )
     try:
         conn = get_connect(db_name, db_username, db_password, host, port)   
         with conn.cursor() as cursor:
-            cursor.execute(icity_query)
-            #cursor.execute(appler_query)
-            conn.commit()
+            for query in queries:
+                cursor.execute(query)
+                conn.commit()
+                start = re.search(r'\w+\.\w+', query).start()
+                end = re.search(r'\w+\.\w+', query).end()                
+                print(f'Query for table {query[start:end]} was exicuted')
     except Exception as e:
         print(e)
     finally:
