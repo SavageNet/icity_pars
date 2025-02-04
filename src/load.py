@@ -22,7 +22,7 @@ def get_query(json_name, table_schema, table_name):
         for product_data in data:
             for model_nm, feature_dict in product_data.items():
                 for model_feature, price in feature_dict.items():
-                    price = price.replace('.', '')
+                    price = re.sub(r'\.+', '', price)
                     try: 
                         price = int(price)
                     except:
@@ -50,7 +50,7 @@ def main():
         table_name='appler_price'       
     )
     queries = (
-        #icity_query,
+        icity_query,
         appler_query,
     )
     try:

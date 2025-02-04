@@ -83,8 +83,15 @@ def get_data(lines: list[str], parser_type: str, need_cleaning=False):
     elif 'watch' in parser_type:
         result = simple_pars(lines, clear_func, result, goal_word='watch')
     elif 'imac' in parser_type:
+        lines = list(map(
+            lambda x: x.replace('[MCYT4] Mac Mini M4 (24/512) ', '[MCYT4] Mac Mini M4 (24/512) - '),
+            lines
+        ))
         result = simple_pars(lines, clear_func, result, skip_prefix='[')
     elif 'аксессуары' in parser_type:
+        for i in range(len(lines)):
+            if len(lines[i].strip()) > 0 and lines[i].strip().endswith('0'):
+                lines[i] = lines[i].strip() + '₽'        
         adapter_index = find_in_list(lines, lambda line: 'adapter' in line.lower())
         if adapter_index > 0:
             lines[adapter_index - 1] = '🔌 Adapter'

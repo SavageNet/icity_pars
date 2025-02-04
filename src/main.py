@@ -69,9 +69,9 @@ async def main():
         'Play', 
         'Камер',
     ]
-    #product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
+    product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
     my_product_msg_list, my_product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)
-    #save_json(product_msg_list, 'icity_data')
+    save_json(product_msg_list, 'icity_data')
     save_json(my_product_msg_list, 'appler_data')
 
 with client:
