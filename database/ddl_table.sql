@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS stg.delta_price
     id integer NOT NULL,
     model_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
     model_feature character varying(256) COLLATE pg_catalog."default" NOT NULL,
-    appler_price integer GENERATED ALWAYS AS ((icity_price + COALESCE(delta, 0))) STORED,
+    appler_price integer GENERATED ALWAYS AS ((icity_price + delta)) STORED,
     icity_price integer,
     delta integer,
     processed_dttm timestamp without time zone,
@@ -63,6 +63,16 @@ DROP TABLE IF EXISTS stg.custom_delta;
 CREATE TABLE IF NOT EXISTS stg.custom_delta
 (
     id integer NOT NULL,
+    model_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    model_feature character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    appler_price integer GENERATED ALWAYS AS ((icity_price + custom_delta)) STORED,
+    icity_price integer,
     custom_delta integer,
-    CONSTRAINT custom_delta_pkey PRIMARY KEY (id)
+    time_handled timestamp without time zone NOT NULL DEFAULT (date_trunc('second'::text, now()))::timestamp without time zone,
+    CONSTRAINT custom_delta_pkey PRIMARY KEY (id, model_name, model_feature)
 )
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS stg.custom_delta
+    OWNER to postgres;

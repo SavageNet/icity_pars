@@ -2,6 +2,7 @@ import psycopg2
 import json
 from config import *
 import re
+import pandas as pd
 
 def get_connect(db_name, db_username, db_password, host, port):
     conn = psycopg2.connect(
@@ -61,7 +62,14 @@ def main():
                 conn.commit()
                 start = re.search(r'\w+\.\w+', query).start()
                 end = re.search(r'\w+\.\w+', query).end()                
-                print(f'Query for table {query[start:end]} was exicuted')
+                print(f'Insert for table {query[start:end]} was exicuted')
+            with open('database/missing_join_select.sql', 'r') as query:
+                cursor.execute(query.read())
+                rows = cursor.fetchall()
+                print('WARNING! Несовпавшие строки:')
+                df = pd.DataFrame(rows)
+                print(df)
+                conn.commit()          
     except Exception as e:
         print(e)
     finally:
@@ -70,5 +78,5 @@ def main():
         
 if __name__ == '__main__':
     main()
-    print('Data is loaded')
+    
     

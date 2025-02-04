@@ -46,7 +46,27 @@ def get_connect(db_name, db_username, db_password, host, port):
     return conn
 
 def get_content_from_view():
-    
+    try:
+        conn = get_connect(db_name, db_username, db_password, host, port)
+        result = {}   
+        with conn.cursor() as cursor:
+            cursor.execute('select model_name, model_features, prices from dm.message_compile')
+            rows = cursor.fetchall()
+            conn.commit()
+            for model_name, model_features, prices in rows:
+                if model_name not in result:
+                    model_features = model_features.split(';')
+                    prices = prices.split(';')
+                    result[model_name] = {model_feature: price for model_feature, price in zip(model_features, prices)}
+                else:
+                    raise Exception()
+            
+            return result
+    except Exception as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
 
 async def main():
     product_list = [
@@ -62,19 +82,11 @@ async def main():
         'Play', 
         'Камер'
     ]    
-    product_msg_list, product_msg_id = await get_right_messages(channel_username, product_list=product_list)
-    try:
-        conn = get_connect(db_name, db_username, db_password, host, port)   
-        with conn.cursor() as cursor:
-            cursor.execute(
-                
-            )
-            conn.commit()
-    except Exception as e:
-        print(e)
-    finally:
-        if conn:
-            conn.close()
+    product_msg_list, product_msg_id = await get_right_messages(my_channel_username, product_list=product_list)
+    data = get_content_from_view()
+    print_dict(data)
+    print(product_msg_list[0])
+    
         
-if __name__ == '__main__':
+with client:
     client.loop.run_until_complete(main())

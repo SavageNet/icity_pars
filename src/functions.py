@@ -14,20 +14,28 @@ def split_by_dash(line: str) -> tuple[str]:
     Функция разделит строку по первому дефису слева от цены. Или по первому пробелу, если дефиса нет (Выдаст предупреждение в таком случае) 
     Не учитывает ₽ и все после него!
     """
-    if not (rub_index := line.find('₽')) == -1:
+    if (rub_index := line.find('₽')) != -1:
         line = line[:rub_index]
-    dash_index = None
+    line = line.strip()
+    last_space_index = None
     for i in range(len(line) - 1, -1, -1):
-        if line[i] == chr(45) or line[i] == chr(8211):
-            dash_index = i
+        if line[i] == ' ':
+            last_space_index = i
             break
     else:
-        raise Exception(f'В строке нет дефиса: {line}')
+        raise Exception(f'Сломалось на: {line}')
     try:
-        return (line[:dash_index], line[dash_index + 1:])
+        if re.match(r'[\-|\–]', line[last_space_index + 1]):
+            last_space_index += 1
+        elif re.match(r'[\-|\–]', line[last_space_index - 1]):
+            last_space_index -= 1
+        result = (line[:last_space_index], line[last_space_index + 1:])
+        if line[last_space_index] != '-':
+            print(f'WARNING! Ебанутая строка {line}. Разделилась как {result}')
+        return result
     except Exception as e:
         print(f'WARNING {e} at line {line}')
-        return (line[:dash_index], None)
+        return (line[:last_space_index], None)
         
 
 def clear(line: str) -> str:
