@@ -44,9 +44,16 @@ def clear(line: str) -> str:
     result = re.sub(r'\s*;\s*', ';', result)
     return result.strip() 
 
-def find_in_list(list: list, condition: callable):
-    for i in range(len(list)):
-        if condition(list[i]):
+def find_in_list(list: list, condition: callable, start_index = 0, match_count = 1, is_found_list = None):
+    count = 0
+    for i in range(start_index, len(list)):
+        if not is_found_list:
+            if condition(list[i]):
+                count += 1
+        else:
+            if condition(list[i]) and not is_found_list[i]:
+                count += 1            
+        if count == match_count:
             return i
     return None
 

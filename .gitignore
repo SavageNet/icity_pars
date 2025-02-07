@@ -8,3 +8,6 @@ venv/
 .idea/
 .vscode/
 data/
+
+file*
+plan*
