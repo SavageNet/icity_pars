@@ -9,5 +9,5 @@ venv/
 .vscode/
 data/
 
-file*
-plan*
+*.txt
+*.png

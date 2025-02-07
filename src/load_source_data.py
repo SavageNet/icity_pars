@@ -1,8 +1,8 @@
+import pandas as pd
 import psycopg2
 import json
-from config import *
 import re
-import pandas as pd
+from config import *
 
 def get_connect(db_name, db_username, db_password, host, port):
     conn = psycopg2.connect(

@@ -1,0 +1,1 @@
+python .\src\update_source.py | python .\src\load_source_data.py | python .\src\update_messages.py

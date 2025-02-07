@@ -1,5 +1,5 @@
-from functions import *
 import re
+from functions import *
 
 def simple_pars(lines: list[str], clear_func: callable, result: dict, goal_word='', skip_prefix='qwertyuiop'):
     i = 1

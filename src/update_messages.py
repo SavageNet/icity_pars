@@ -1,11 +1,10 @@
 from telethon import TelegramClient
-from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
+from datetime import date
 import psycopg2
 import regex
 import time
-from datetime import date
 from config import *
 from functions import *
 
@@ -118,7 +117,7 @@ async def rewrite_messages(messages_by_id: dict[int, str], data: dict[str,dict[s
             await client.edit_message(channel_entity, message_id, '\n'.join(lines))
             print(f'Message {lines[0]} was edited')
         except MessageNotModifiedError:
-            print(f'WARNING Message {lines[0]} was remained')
+            print(f' Message {lines[0]} was remained')
         finally:
             time.sleep(1)
     try:    
@@ -130,27 +129,13 @@ async def rewrite_messages(messages_by_id: dict[int, str], data: dict[str,dict[s
         print('Date was edited')
     except MessageNotModifiedError:
         print('Date date was remained')
-
-            
-        
-async def main():
-    product_list = [
-        'Iphone', 
-        'Airpods', 
-        'Watch', 
-        'MacBook', 
-        'IPad', 
-        'IMac', 
-        'Аксессуары', 
-        'Samsung', 
-        'Dyson', 
-        'Play', 
-        'Камер'
-    ]    
+    
+async def main():  
     product_msg_list, pinned_message_id = await get_right_messages(my_channel_username, product_list=product_list)
     data = get_content_from_view()
     messages_by_id = {product_msg.id: product_msg.message for product_msg in product_msg_list}
     await rewrite_messages(messages_by_id, data, pinned_message_id)
      
-with client:
-    client.loop.run_until_complete(main())
+if __name__ == '__main__':
+    with client:
+        client.loop.run_until_complete(main())

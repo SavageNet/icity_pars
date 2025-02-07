@@ -38,26 +38,6 @@ ALTER TABLE IF EXISTS source.icity_price
     OWNER to postgres;
 
 
--- Table: stg.delta_price
-DROP TABLE IF EXISTS stg.delta_price;
-CREATE TABLE IF NOT EXISTS stg.delta_price
-(
-    id integer NOT NULL,
-    model_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
-    model_feature character varying(256) COLLATE pg_catalog."default" NOT NULL,
-    appler_price integer GENERATED ALWAYS AS ((icity_price + delta)) STORED,
-    icity_price integer,
-    delta integer,
-    processed_dttm timestamp without time zone,
-    time_updated timestamp without time zone,
-    CONSTRAINT appler_price_pkey PRIMARY KEY (id, model_name, model_feature)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS stg.delta_price
-    OWNER to postgres;
-
 -- Table: stg.custom_delta
 DROP TABLE IF EXISTS stg.custom_delta;
 CREATE TABLE IF NOT EXISTS stg.custom_delta
