@@ -7,4 +7,4 @@ select
 	appler_price,
 	icity_price,
 	delta
-from stg.delta_price
+from stg.dm_delta_price

@@ -23,7 +23,7 @@ async def get_right_messages(channel_username: str, product_list: list[str] = No
     messages = history.messages
     product_msg_id = {}
     for message in messages:
-        if message.pinned:
+        if message.pinned and 'розыгрыш' not in message.message.lower():
             message = message.to_dict()
             for element in message['reply_markup']['rows']:
                 for button in element['buttons']:

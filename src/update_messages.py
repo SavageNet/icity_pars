@@ -74,8 +74,12 @@ def get_content_from_view():
 
 async def rewrite_messages(messages_by_id: dict[int, str], data: dict[str,dict[str,str]], pinned_message_id):
     channel_entity = await client.get_entity(my_channel_username)
+    with open('monitoring.txt', 'r+') as file: 
+        file.truncate(0)
+        file.write(date.today().strftime("%d.%m.%y") + '\n')
     for message_id, message_text in messages_by_id.items():
         lines = message_text.split('\n')
+        lines_to_monitoring = [line for line in lines]
         for i in range(len(lines)):
             if len(lines[i]) > 0 and lines[i][0] == '-':
                 lines[i] = lines[i][1:]
@@ -109,10 +113,13 @@ async def rewrite_messages(messages_by_id: dict[int, str], data: dict[str,dict[s
                     is_found[price_line_index] = True
                     if price == '-1':
                         lines[price_line_index] = f'{model_feature} - ожидаем'
+                        lines_to_monitoring[price_line_index] = f'{model_feature} - ожидаем (verified)'
                     else:
                         lines[price_line_index] = f'{model_feature} - {'{:,.0f}'.format(int(price)).replace(',', '.')}₽'
-        with open(f'file_{message_id}.txt', 'w', encoding='UTF-8') as file:
-            file.write('\n'.join(lines))
+                        lines_to_monitoring[price_line_index] = f'{model_feature} - {'{:,.0f}'.format(int(price)).replace(',', '.')}₽ (verified)'
+        with open(f'monitoring.txt', 'a', encoding='UTF-8') as file:
+            file.write('\n'.join(lines_to_monitoring))
+            file.write('\n--------------------------------\n')
         try:
             await client.edit_message(channel_entity, message_id, '\n'.join(lines))
             print(f'Message {lines[0]} was edited')
