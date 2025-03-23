@@ -4,7 +4,6 @@ def is_price_line(line: str) -> bool:
     specific_strings = ('ожидаем', 'по запросу', 'уточняйте', '💛')
     ban_strings = ('(Актуальные цены уточняйте)',)
     is_specific_line = any([e.lower() in line.lower() for e in specific_strings])
-    a = [e.lower() in line.lower() for e in ban_strings]
     if any([e.lower() in line.lower() for e in ban_strings]):
         return False
     return '₽' in line or is_specific_line
@@ -14,6 +13,7 @@ def split_by_dash(line: str) -> tuple[str]:
     Функция разделит строку по первому дефису слева от цены. Или по первому пробелу, если дефиса нет (Выдаст предупреждение в таком случае) 
     Не учитывает ₽ и все после него!
     """
+    line = line.replace('по запросу', 'по_запросу')
     if (rub_index := line.find('₽')) != -1:
         line = line[:rub_index]
     line = line.strip()
