@@ -23,13 +23,13 @@ async def get_right_messages(channel_username: str, product_list: list[str] = No
     messages = history.messages
     product_msg_id = {}
     for message in messages:
-        if message.pinned and 'розыгрыш' not in message.message.lower():
+        if message.pinned and 'прайс обновлен' in message.message.lower():
             message = message.to_dict()
             for element in message['reply_markup']['rows']:
                 for button in element['buttons']:
                     key = clear(button['text']).lower().replace(' ', '')
                     value = int(button['url'].split('/')[-1])
-                    if product_list == None or any([name.lower() in key.lower() for name in product_list]):
+                    if product_list == None or (any([name.lower() in key.lower() for name in product_list]) and 'б/уiphone' not in key.lower()):
                         product_msg_id[key] = value
     product_msg_list = await client.get_messages(channel_username, ids=list(product_msg_id.values()))
     return product_msg_list
